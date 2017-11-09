@@ -1,23 +1,8 @@
 {
   "data_dir": "/data",
-  "ui_dir": "/ui",
-  "client_addr": "0.0.0.0",
-  "ports": {
-    "http"  : "8500",
-    "https" : "8243",
-    "dns"   : "53"
-  },
-  "start_join":{
-    {{LIST_PODIPS}}
-  },
-  "acl_default_policy": "deny",
-  "acl_datacenter": "ENVIRONMENT",
-  "acl_master_token": "MASTER_TOKEN",
-  "key_file" : "/etc/consul/ssl/consul.key",
-  "cert_file": "/etc/consul/ssl/consul.crt",
-  "recursor": "8.8.8.8",
+  "ui_dir": "/var/consul/ui",
   "disable_update_check": true,
-  "encrypt" : "SOME_GOSSIP_KEY",
-  "log_level": "INFO",
-  "enable_syslog": false
+  "performance": {
+    "raft_multiplier": 10
+  }
 }
