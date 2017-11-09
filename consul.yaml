@@ -27,7 +27,7 @@ spec:
               value: "false"                             # to debug or not to debug
             - name: "CONSUL_SERVER_COUNT"
               value: "3"                   # integer value for number of containers
-          image: 'infobloxcto/consul-cluster-test1:v1.0.1'
+          image: 'infobloxcto/consul-cluster-test1:v1.0.2'
           resources:
             limits:
               cpu: 100m                        # how much CPU are you giving the container

@@ -2,33 +2,13 @@
 KUBE_TOKEN=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`
 NAMESPACE=`cat /var/run/secrets/kubernetes.io/serviceaccount/namespace`
 
-if [ -z ${CONSUL_SERVER_COUNT} ]; then
-  export CONSUL_SERVER_COUNT=3
-fi
-
-if [ -z ${CONSUL_HTTP_PORT} ]; then
-  export CONSUL_HTTP_PORT=8500
-fi
-
-if [ -z ${CONSUL_HTTPS_PORT} ]; then
-  export CONSUL_HTTPS_PORT=8243
-fi
-
-if [ -z ${CONSUL_DNS_PORT} ]; then
-  export CONSUL_DNS_PORT=53
-fi
-
-if [ -z ${CONSUL_SERVICE_HOST} ]; then
-  export CONSUL_SERVICE_HOST="127.0.0.1"
-fi
-
-if [ -z ${CONSUL_WEB_UI_ENABLE} ]; then
-  export CONSUL_WEB_UI_ENABLE="true"
-fi
-
-if [ -z ${CONSUL_SSL_ENABLE} ]; then
-  export CONSUL_SSL_ENABLE="true"
-fi
+CONSUL_SERVER_COUNT=${CONSUL_SERVER_COUNT:-3}
+CONSUL_HTTP_PORT=${CONSUL_HTTP_PORT:-8500}
+CONSUL_HTTPS_PORT=${CONSUL_HTTPS_PORT:-8243}
+CONSUL_DNS_PORT=${CONSUL_DNS_PORT:-53}
+CONSUL_SERVICE_HOST=${CONSUL_SERVICE_HOST:-"127.0.0.1"}
+CONSUL_WEB_UI_ENABLE=${CONSUL_WEB_UI_ENABLE:-"true"}
+CONSUL_SSL_ENABLE=${CONSUL_SSL_ENABLE:-"false"}
 
 if [ ${CONSUL_SSL_ENABLE} == "true" ]; then
   if [ ! -z ${CONSUL_SSL_KEY} ] &&  [ ! -z ${CONSUL_SSL_CRT} ]; then
@@ -65,15 +45,17 @@ done
 LIST_IPS_FORMATTED=`echo "$LIST_IPS" | sed -e 's/$/,/' -e '$s/,//'`
 echo $LIST_IPS_FORMATTED
 
-sed -i "s,%%ENVIRONMENT%%,$ENVIRONMENT,"             /etc/consul/config.json
-sed -i "s,%%MASTER_TOKEN%%,$MASTER_TOKEN,"           /etc/consul/config.json
-sed -i "s,%%GOSSIP_KEY%%,$GOSSIP_KEY,"               /etc/consul/config.json
-sed -i "s,%%CONSUL_HTTP_PORT%%,$CONSUL_HTTP_PORT,"   /etc/consul/config.json
-sed -i "s,%%CONSUL_HTTPS_PORT%%,$CONSUL_HTTPS_PORT," /etc/consul/config.json
-sed -i "s,%%CONSUL_DNS_PORT%%,$CONSUL_DNS_PORT,"     /etc/consul/config.json
-sed -i "s,%%LIST_PODIPS%%,$LIST_IPS_FORMATTED,"      /etc/consul/config.json
+#sed "s,{{ENVIRONMENT}},${ENVIRONMENT}" -i /etc/consul/config.json
+#sed "s,{{MASTER_TOKEN}},${MASTER_TOKEN}" -i /etc/consul/config.json
+#sed "s,{{GOSSIP_KEY}},${GOSSIP_KEY}" -i /etc/consul/config.json
+#sed "s,{{CONSUL_HTTP_PORT}},${CONSUL_HTTP_PORT}" -i /etc/consul/config.json
+#sed "s,{{CONSUL_HTTPS_PORT}},${CONSUL_HTTPS_PORT}" -i /etc/consul/config.json
 
-cmd="consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
+sed "s|{{LIST_PODIPST}}|$LIST_IPS_FORMATTED|" -i /etc/consul/config.json
+
+cat /etc/consul/config.json
+
+#cmd="consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
 
 #if [ ! -z ${CONSUL_DEBUG} ]; then
 #  ls -lR /etc/consul
