@@ -25,4 +25,4 @@ spec:
       port: 53
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    pool: consulpool
+      app: consul

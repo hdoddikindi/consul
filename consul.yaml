@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  namespace: kube-system
+  namespace: ks
   name: consul
 spec:
-  replicas: ${CONSUL_COUNT}                               # number of consul containers
+  replicas: 3                              # number of consul containers
   # selector identifies the set of Pods that this
   # replication controller is responsible for managing
   selector:
@@ -12,9 +12,6 @@ spec:
   template:
     metadata:
       labels:
-        # Important: these labels need to match the selector above
-        # The api server enforces this constraint.
-        pool: consulpool
         app: consul
     spec:
       containers:
@@ -29,12 +26,12 @@ spec:
             - name: "CONSUL_DEBUG"
               value: "false"                             # to debug or not to debug
             - name: "CONSUL_SERVER_COUNT"
-              value: "${CONSUL_COUNT}"                   # integer value for number of containers
-          image: 'YOUR_CONSUL_IMAGE_HERE'
+              value: "3"                   # integer value for number of containers
+          image: 'infobloxcto/consul-cluster-test1:v1'
           resources:
             limits:
-              cpu: ${CONSUL_CPU}                         # how much CPU are you giving the container
-              memory: ${CONSUL_RAM}                      # how much RAM are you giving the container
+              cpu: 100m                        # how much CPU are you giving the container
+              memory: 50Mi                      # how much RAM are you giving the container
           imagePullPolicy: Always
           ports:
           - containerPort: 8500
