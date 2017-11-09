@@ -82,4 +82,4 @@ cmd="consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-
 #  sed -i "s,INFO,DEBUG," /etc/consul/config.json
 #fi
 
-consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
+consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}
