@@ -48,18 +48,22 @@ fi
 
 LIST_IPS=`curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/$NAMESPACE/pods | jq '.items[] | select(.status.containerStatuses[].name=="consul") | .status .podIP'`
 
+echo "$LIST_IPS"
+
 #basic test to see if we have ${CONSUL_SERVER_COUNT} number of containers alive
 VALUE='0'
 
 while [ $VALUE != ${CONSUL_SERVER_COUNT} ]; do
   echo "waiting 10s on all the consul containers to spin up"
   sleep 10
-  LIST_IPS=`curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/kube-system/pods | jq '.items[] | select(.status.containerStatuses[].name=="consul") | .status .podIP'`
+  LIST_IPS=`curl -sSk -H "Authorization: Bearer $KUBE_TOKEN" https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/$NAMESPACE/pods | jq '.items[] | select(.status.containerStatuses[].name=="consul") | .status .podIP'`
+  echo "$LIST_IPS"
   echo "$LIST_IPS" | sed -e 's/$/,/' -e '$s/,//' > tester
   VALUE=`cat tester | wc -l`
 done
 
 LIST_IPS_FORMATTED=`echo "$LIST_IPS" | sed -e 's/$/,/' -e '$s/,//'`
+echo $LIST_IPS_FORMATTED
 
 sed -i "s,%%ENVIRONMENT%%,$ENVIRONMENT,"             /etc/consul/config.json
 sed -i "s,%%MASTER_TOKEN%%,$MASTER_TOKEN,"           /etc/consul/config.json
@@ -71,11 +75,11 @@ sed -i "s,%%LIST_PODIPS%%,$LIST_IPS_FORMATTED,"      /etc/consul/config.json
 
 cmd="consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
 
-if [ ! -z ${CONSUL_DEBUG} ]; then
-  ls -lR /etc/consul
-  cat /etc/consul/config.json
-  echo "${cmd}"
-  sed -i "s,INFO,DEBUG," /etc/consul/config.json
-fi
+#if [ ! -z ${CONSUL_DEBUG} ]; then
+#  ls -lR /etc/consul
+#  cat /etc/consul/config.json
+#  echo "${cmd}"
+#  sed -i "s,INFO,DEBUG," /etc/consul/config.json
+#fi
 
 consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
