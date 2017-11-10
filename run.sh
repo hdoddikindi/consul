@@ -42,32 +42,7 @@ while [ $VALUE != ${CONSUL_SERVER_COUNT} ]; do
   VALUE=`cat tester | wc -l`
 done
 
-LIST_IPS_FORMATTED=`echo "$LIST_IPS" | sed -e 's/$/,/' -e '$s/,//'`
-echo $LIST_IPS_FORMATTED
-IPS_ARRAY=($LIST_IPS_FORMATTED)
+set -- $LIST_IPS
+echo "Found consuls:" + $@
 
-for i in "${IPS_ARRAY[@]}"
-    do
-      echo "$i"
-    done
-
-#sed "s,{{ENVIRONMENT}},${ENVIRONMENT}" -i /etc/consul/config.json
-#sed "s,{{MASTER_TOKEN}},${MASTER_TOKEN}" -i /etc/consul/config.json
-#sed "s,{{GOSSIP_KEY}},${GOSSIP_KEY}" -i /etc/consul/config.json
-#sed "s,{{CONSUL_HTTP_PORT}},${CONSUL_HTTP_PORT}" -i /etc/consul/config.json
-#sed "s,{{CONSUL_HTTPS_PORT}},${CONSUL_HTTPS_PORT}" -i /etc/consul/config.json
-
-#sed "s|{{LIST_PODIPST}}|$LIST_IPS_FORMATTED|" -i /etc/consul/config.json
-
-#cat /etc/consul/config.json
-
-#cmd="consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT}"
-
-#if [ ! -z ${CONSUL_DEBUG} ]; then
-#  ls -lR /etc/consul
-#  cat /etc/consul/config.json
-#  echo "${cmd}"
-#  sed -i "s,INFO,DEBUG," /etc/consul/config.json
-#fi
-
-consul agent -server -config-dir=/etc/consul -dc ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT} -retry-join ${IPS_ARRAY[0]} -retry-join ${IPS_ARRAY[1]} -retry-join ${IPS_ARRAY[2]}
+consul agent -server -config-dir=/etc/consul -datacenter ${ENVIRONMENT} -bootstrap-expect ${CONSUL_SERVER_COUNT} -retry-join $1 -retry-join $2 -retry-join $3

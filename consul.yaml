@@ -18,7 +18,7 @@ spec:
         - name: consul
           env:
             - name: "ENVIRONMENT"
-              value: "SOME_ENVIRONMENT_NAME"             # some name
+              value: "dc1"             # some name
             - name: "MASTER_TOKEN"
               value: "INITIAL_MASTER_TOKEN_FOR_ACCESS"   # UUID preferable
             - name: "GOSSIP_KEY"

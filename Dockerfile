@@ -30,5 +30,5 @@ RUN chmod +x /usr/bin/run.sh
 COPY run1.sh /usr/bin/run1.sh
 RUN chmod +x /usr/bin/run1.sh
 
-ENTRYPOINT ["/usr/bin/run.sh"]
+ENTRYPOINT ["/usr/bin/run1.sh"]
 CMD []
