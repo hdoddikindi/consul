@@ -4,5 +4,6 @@
   "disable_update_check": true,
   "performance": {
     "raft_multiplier": 10
-  }
+  },
+  "log_level": "DEBUG"
 }
